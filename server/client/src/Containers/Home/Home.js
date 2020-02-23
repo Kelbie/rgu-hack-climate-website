@@ -14,6 +14,7 @@ import Reveal from "react-reveal/Reveal";
 import Fade from "react-reveal/Fade";
 
 import { useSpring, animated } from "react-spring";
+import Footer from "../../Components/Footer/Footer";
 
 const calc = (x, y) => [x - window.innerWidth / 2, y - window.innerHeight / 2];
 
@@ -38,7 +39,7 @@ function Home({ className, ...props }) {
         <div>
           <Reveal left>
             <h1>Visualising Air Pollution</h1>
-            <p>
+            <p className="big">
               Lorem Ipsum is simply dummy text of the printing and typesetting
               industry. Lorem Ipsum has been the industry's standard dummy text
               ever since the 1500s, when an unknown printer took a galley of
@@ -85,6 +86,7 @@ function Home({ className, ...props }) {
       <Section className="max">
         <Contact></Contact>
       </Section>
+      <Footer></Footer>
     </div>
   );
 }
@@ -106,6 +108,10 @@ export default styled(Home)`
     width: 800px;
     max-width: 100%;
     margin: auto;
+  }
+
+  .big {
+    width: 400px;
   }
 
   .background {

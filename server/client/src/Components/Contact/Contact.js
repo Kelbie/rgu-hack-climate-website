@@ -8,6 +8,13 @@ import Label from "../Label/Label";
 import Textarea from "../Textarea/Textarea";
 import Input from "../Input/Input";
 import TextareaAutosize from "react-textarea-autosize";
+import { rgba } from "polished";
+import {
+  faCalendar,
+  faBriefcase,
+  faComments,
+  faPaperPlane
+} from "@fortawesome/free-solid-svg-icons";
 
 function Contact({ className, ...props }) {
   const { handleSubmit, register, errors } = useForm();
@@ -44,7 +51,7 @@ function Contact({ className, ...props }) {
         })}
       ></input>
       {errors.email && errors.email.message}
-      <Label>Message</Label>
+      <Label required>Message</Label>
       <textarea
         name="message"
         ref={register({ required: "You must include a message" })}
@@ -52,7 +59,9 @@ function Contact({ className, ...props }) {
       ></textarea>
       {errors.message && errors.message.message}
       <div>
-        <Button type="submit">SUBMIT</Button>
+        <Button type="submit" icon={faPaperPlane}>
+          SUBMIT
+        </Button>
       </div>
     </form>
   );
@@ -68,8 +77,14 @@ export default styled(Contact)`
 
   input,
   textarea {
-    padding: 8px;
+    background: ${rgba("#77126E", 0.05)};
     border: 1px solid #77126e;
+    padding: 8px 16px;
+    border-radius: 16px;
+    font-size: 20px;
+    color: #3b3b3b;
+    box-shadow: 0px 3px 6px 0px ${rgba("#77126e", 0.1)};
+    font-family: "Blinker SemiBold" !important;
     resize: none;
   }
 `;

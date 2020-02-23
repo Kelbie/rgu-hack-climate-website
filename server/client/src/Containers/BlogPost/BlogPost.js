@@ -1,84 +1,41 @@
 import React, { useState, useEffect, useCallback } from "react";
 import ApolloClient from "apollo-boost";
 import { gql } from "apollo-boost";
-import moment from "moment";
-import Markdown from "markdown-to-jsx";
-import readingTime from "reading-time";
-import SyntaxHighlighter from "react-syntax-highlighter";
-import { docco } from "react-syntax-highlighter/dist/esm/styles/hljs";
-import { GithubCounter } from "react-reactions";
 
-import "./BlogPost.css";
+import Header from "../../Components/Header/Header";
+import BlogCard from "../../Components/BlogCard/BlogCard";
 import { config } from "../../config";
-import GithubReactionTextCard from "../../Components/GithubReactionTextCard/GithubReactionTextCard";
+import LinkButton from "../../Components/LinkButton.js/LinkButton";
+import { useForm } from "react-hook-form";
+import Label from "../../Components/Label/Label";
+import RichTextEditor from "react-rte";
+import {
+  faCalendar,
+  faBriefcase,
+  faComments,
+  faPaperPlane
+} from "@fortawesome/free-solid-svg-icons";
 
-export default function BlogHome() {
-  const [blog, setBlogs] = useState([]);
-  const [addReaction, setAddreaction] = useState(false);
-  const [reactionCounter, setReactionCounter] = useState([]);
-  const issueNumber = parseInt(window.location.href.split("/").pop());
+import { rgba } from "polished";
 
-  const getEmojiStringByName = useCallback(emojiName => {
-    switch (emojiName) {
-      case "THUMBS_UP":
-        return "👍";
+import styled from "styled-components";
+import Button from "../../Components/Button/Button";
 
-      case "THUMBS_DOWN":
-        return "👎";
-
-      case "LAUGH":
-        return "😄";
-
-      case "HOORAY":
-        return "🎉";
-
-      case "CONFUSED":
-        return "😕";
-
-      case "HEART":
-        return "❤️";
-
-      case "ROCKET":
-        return "🚀";
-
-      case "EYES":
-        return "👀";
-
-      default:
-        return "";
+function Blogs(props) {
+  const [body, setBody] = useState(RichTextEditor.createEmptyValue());
+  const { setValue, register, handleSubmit } = useForm({
+    defaultValues: {
+      title: "",
+      body: ""
     }
+  });
+
+  useEffect(() => {
+    register({ name: "body" });
   }, []);
 
-  const setReactionFun = useCallback(
-    reactions => {
-      // {
-      //   emoji: "👍", // String emoji reaction
-      //   by: "case" // String of persons name
-      // }
-
-      let reactions_array = [];
-      reactions.forEach(element => {
-        let obj = {
-          by: element.user.login,
-          emoji: getEmojiStringByName(element.content)
-        };
-        reactions_array.push(obj);
-      });
-
-      setReactionCounter(reactions_array);
-    },
-    [getEmojiStringByName]
-  );
-
-  const setBlogsFunction = useCallback(
-    array => {
-      setBlogs(array);
-      setReactionFun(array.reactions.nodes);
-    },
-    [setReactionFun]
-  );
-
-  const getBlogsFromGithubIssues = useCallback(() => {
+  const getBlogsFromGithubIssues = results => {
+    console.log(123, results);
     const client = new ApolloClient({
       uri: "https://api.github.com/graphql",
       request: operation => {
@@ -91,131 +48,134 @@ export default function BlogHome() {
     });
 
     client
-      .query({
-        query: gql`
-          {
-            repository(owner: "${config.githubUserName}", name: "${config.githubRepo}") {
-              issue(number: ${issueNumber}) {
-                title
+      .mutate({
+        mutation: gql`
+          mutation Post($title: String!, $body: String) {
+            createIssue(
+              input: {
+                repositoryId: "MDEwOlJlcG9zaXRvcnkyNDIzNTE0NjE="
+                labelIds: ["MDU6TGFiZWwxODY0OTg1Mzkz"]
+                title: $title
+                body: $body
+              }
+            ) {
+              issue {
                 body
-                bodyHTML
-                url
-                bodyText
-                number
-                bodyHTML
-                author {
-                  url
-                  avatarUrl
-                  login
-                }
-                reactions(first:100){
-                  nodes{
-                    content
-                    user{
-                      id
-                      login
-                    }
-                  }
-                }
-                updatedAt
-                id
               }
             }
           }
-        `
+        `,
+        variables: {
+          title: results.title,
+          body: results.body
+        }
       })
-      .then(result => {
-        setBlogsFunction(result.data.repository.issue);
-      })
-      .catch(err => {
-        console.error(err);
+      .then(() => {
+        window.location.href = "/blog";
       });
-  }, [issueNumber, setBlogsFunction]);
+  };
 
-  useEffect(() => {
-    getBlogsFromGithubIssues();
-  }, [getBlogsFromGithubIssues]);
-
-  const HyperLink = ({ children, ...props }) => (
-    <a
-      href={props.href}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="blog-post-anchor"
-    >
-      {children}
-      <style jsx>
-        {`
-          a {
-            color: #484848;
-            font-weight: 400;
-          }
-        `}
-      </style>
-    </a>
-  );
-
-  const CodeBlock = ({ children }) => (
-    <SyntaxHighlighter language="javascript" style={docco}>
-      {children.props.children}
-    </SyntaxHighlighter>
-  );
-
-  function githubCounterEmojiSelect(emoji) {
-    console.log(emoji);
-  }
-
-  function githubCounterAddReaction() {
-    setAddreaction(!addReaction);
-  }
+  const onSubmit = results => {
+    getBlogsFromGithubIssues(results);
+  };
 
   return (
-    <div>
-      {blog.title && (
-        <div className="blog-view">
-          <h1 className="blog-title">{blog.title}</h1>
-          <div>
-            <div className="author-details">
-              <img
-                className="avatar"
-                src={blog.author.avatarUrl}
-                alt={blog.author.login}
-              />
-              <div>
-                <p className="author-name">{blog.author.login}</p>
-                <p className="blog-date">
-                  {moment(blog.updatedAt).format("DD MMM YYYY")} .{" "}
-                  {readingTime(blog.body).minutes} Min Read .{" "}
-                  <a href={blog.url} target="_black">
-                    View On Github
-                  </a>
-                </p>
-              </div>
-            </div>
-          </div>
-          <Markdown
-            options={{
-              overrides: {
-                a: {
-                  component: HyperLink
-                },
-                pre: {
-                  component: CodeBlock
-                }
-              }
-            }}
-          >
-            {blog.body}
-          </Markdown>
-          {addReaction && (
-            <span className="reaction-github-emoji anim-scale-in">
-              {/* <GithubSelector onSelect={emoji => onEmojiSelect(emoji)} /> */}
-              <GithubReactionTextCard link={blog.url} />
-            </span>
-          )}
-          {/* <GithubCounter counters={reactionCounter} onSelect={emoji => githubCounterEmojiSelect(emoji)} onAdd={() => githubCounterAddReaction()} /> */}
+    <div {...props}>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <h1>CREATE BLOG POST</h1>
+        <Label required>TITLE</Label>
+        <input name="title" ref={register}></input>
+        <Label required>BODY</Label>
+        <RichTextEditor
+          value={body}
+          onChange={e => {
+            setBody(e);
+            setValue("body", e.toString("markdown"));
+          }}
+          toolbarConfig={{
+            display: [
+              "INLINE_STYLE_BUTTONS",
+              "BLOCK_TYPE_BUTTONS",
+              "LINK_BUTTONS",
+              "BLOCK_TYPE_DROPDOWN",
+              "HISTORY_BUTTONS"
+            ],
+            INLINE_STYLE_BUTTONS: [
+              { label: "Bold", style: "BOLD", className: "custom-css-class" },
+              { label: "Italic", style: "ITALIC" }
+            ],
+            BLOCK_TYPE_DROPDOWN: [
+              { label: "Normal", style: "unstyled" },
+              { label: "Heading Large", style: "header-one" },
+              { label: "Heading Medium", style: "header-two" },
+              { label: "Heading Small", style: "header-three" }
+            ],
+            BLOCK_TYPE_BUTTONS: [
+              { label: "UL", style: "unordered-list-item" },
+              { label: "OL", style: "ordered-list-item" }
+            ]
+          }}
+        />
+        <div className="button">
+          <Button icon={faPaperPlane}>SUBMIT</Button>
         </div>
-      )}
+      </form>
     </div>
   );
 }
+
+export default styled(Blogs)`
+  max-width: 800px;
+  width: 100%;
+  margin: auto;
+
+  .button {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  > form {
+    display: flex;
+    flex-direction: column;
+
+    > * {
+      margin-bottom: 8px;
+    }
+  }
+
+  h1 {
+    font-size: 32px !important;
+    margin-left: 8px;
+  }
+
+  input {
+    background: ${rgba("#77126E", 0.05)};
+    border: 1px solid #77126e;
+    padding: 8px 16px;
+    border-radius: 16px;
+    font-size: 20px;
+    color: #3b3b3b;
+    box-shadow: 0px 3px 6px 0px ${rgba("#77126e", 0.1)};
+    font-family: "Blinker SemiBold" !important;
+  }
+
+  ${Label} {
+    margin-left: 8px;
+  }
+
+  h1 {
+    color: #77126e;
+    font-family: "Blinker SemiBold" !important;
+    font-size: 42px;
+  }
+
+  .RichTextEditor__root___2QXK- {
+    background: ${rgba("#77126e", 0.1)};
+    border-radius: 16px;
+    border: 1px solid #77126e;
+  }
+
+  .EditorToolbar__root___3_Aqz {
+    border-bottom: 1px solid #77126e;
+  }
+`;

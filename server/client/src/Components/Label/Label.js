@@ -7,6 +7,9 @@ function Label(props) {
 }
 
 export default styled(Label)`
+  color: #77126e;
+  font-size: 24px;
+  font-family: "Blinker SemiBold" !important;
   &::after {
     content: ${props => (props.required ? "''" : "none")};
     background: #77126e;

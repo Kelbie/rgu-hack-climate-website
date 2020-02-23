@@ -1,7 +1,10 @@
 /*
- * GET home page.
+ * POST contact form.
  */
 
-exports.index = function(req, res) {
+
+
+exports.contact = function(req, res) {
+  
   res.render("index", { title: "Express" });
 };

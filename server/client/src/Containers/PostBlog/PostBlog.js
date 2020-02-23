@@ -1,16 +1,16 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useCallback, useEffect } from "react";
+
 import ApolloClient from "apollo-boost";
+import { config } from "../../config";
 import { gql } from "apollo-boost";
 
-import Header from "../../Components/Header/Header";
-import BlogCard from "../../Components/BlogCard/BlogCard";
-import { config } from "../../config";
-import LinkButton from "../../Components/LinkButton.js/LinkButton";
 import styled from "styled-components";
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import { useForm } from "react-hook-form";
+import Label from "../../Components/Label/Label";
 
-function Blogs(props) {
-  const [blogs, setBlogs] = useState([]);
+function PostBlog(props) {
+  const { register } = useForm();
+
   const getBlogsFromGithubIssues = useCallback(() => {
     const client = new ApolloClient({
       uri: "https://api.github.com/graphql",
@@ -56,57 +56,22 @@ function Blogs(props) {
         `
       })
       .then(result => {
-        setBlogsFunction(result.data.repository.issues.nodes);
+        console.log(123, result.data.repository.issues.nodes);
       });
   }, []);
-
   useEffect(() => {
     getBlogsFromGithubIssues();
   }, [getBlogsFromGithubIssues]);
 
-  function setBlogsFunction(array) {
-    setBlogs(array);
-  }
-
-  const [user, setUser] = useState();
-
-  useEffect(() => {
-    async function fetchData() {
-      const response = await fetch("http://localhost:30662/api/auth", {
-        credentials: "include"
-      });
-      const json = await response.json();
-      setUser(json);
-    }
-
-    fetchData();
-  }, []);
+  function setBlogsFunction(array) {}
 
   return (
     <div {...props}>
-      {user === undefined ||
-      (Object.entries(user).length === 0 &&
-        user.constructor === Object) ? null : (
-        <div className="button">
-          <LinkButton to="blog/post" icon={faPlus}>
-            POST BLOG
-          </LinkButton>
-        </div>
-      )}
-      <div className="blog-div-main">
-        {blogs.map((v, i) => {
-          return <BlogCard blog={v} key={i} />;
-        })}
-      </div>
+      <Label required>Title</Label>
+      <input name="title" ref={register}></input>
+      <Label required>Content</Label>
     </div>
   );
 }
 
-export default styled(Blogs)`
-  .button {
-    width: 100%;
-    max-width: 800px;
-    margin: auto;
-    height: max-content;
-  }
-`;
+export default styled(PostBlog)``;
