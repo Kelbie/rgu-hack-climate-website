@@ -1,10 +1,10 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import ParticleField from "react-particles-webgl";
-import "./styles.css";
+// import "./styles.css";
 import styled from "styled-components";
 
-function App() {
+function App(props) {
   /**
    * Docs
    * @see https://timellenberger.com/libraries/react-particles-webgl
@@ -62,10 +62,18 @@ function App() {
   };
 
   return (
-    <div className="App">
+    <div {...props}>
       <ParticleField config={config} />
     </div>
   );
 }
 
-export default styled(App)``;
+export default styled(App)`
+  transform: scale(0.5);
+  pointer-events: none;
+  align-self: auto !important;
+
+  canvas {
+    width: 600px !important;
+  }
+`;

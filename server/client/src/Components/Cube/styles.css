@@ -3,17 +3,19 @@ body {
 }
 
 .App {
+  height: 500px !important;
   pointer-events: none;
-  /* height: auto !important; */
-  background: white;
+  /* height: 1000px !important;
+  background: white; */
 }
 
 .App > div {
   /* width: auto !important; */
+  align-self: none;
 }
 
 canvas {
-  /* transform: scale(0.4); */
+  height: 500px;
   /* width: auto !important; */
 }
 

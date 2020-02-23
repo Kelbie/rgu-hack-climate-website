@@ -5,6 +5,7 @@ import { gql } from "apollo-boost";
 import Header from "../../Components/Header/Header";
 import BlogCard from "../../Components/BlogCard/BlogCard";
 import { config } from "../../config";
+import LinkButton from "../../Components/LinkButton.js/LinkButton";
 
 function Blogs() {
   const [blogs, setBlogs] = useState([]);
@@ -66,7 +67,7 @@ function Blogs() {
   }
   return (
     <div>
-      <Header />
+      <LinkButton to="blog/post">POST BLOG</LinkButton>
       <div className="blog-div-main">
         {blogs.map((v, i) => {
           return <BlogCard blog={v} key={i} />;

@@ -8,7 +8,4 @@ function Textarea(props) {
   return <TextareaAutosize {...props}></TextareaAutosize>;
 }
 
-export default styled(Textarea)`
-  resize: none;
-  padding: 8px;
-`;
+export default Textarea;

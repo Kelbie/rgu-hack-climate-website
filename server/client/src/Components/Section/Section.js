@@ -21,4 +21,8 @@ export default styled(Section)`
     flex-grow: 1 !important;
     flex-basis: 0 !important;
   }
+
+  > * {
+    align-self: center;
+  }
 `;

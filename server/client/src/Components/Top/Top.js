@@ -1,6 +1,10 @@
 import React from "react";
 
 import styled from "styled-components";
+import { useSpring, animated } from "react-spring";
+
+import Fade from "react-reveal/Fade";
+import Reveal from "react-reveal/Reveal";
 
 import logo from "./netzero.svg";
 
@@ -8,11 +12,13 @@ function Top(props) {
   return (
     <div {...props}>
       <div>
-        <h1>
-          <span className="rgu">RGU</span>{" "}
-          <span className="netzero">NETZERO</span>
-        </h1>
-        <img src={logo}></img>
+        <Reveal bottom>
+          <h1>
+            <span className="rgu">RGU</span>{" "}
+            <span className="netzero">NETZERO</span>
+          </h1>
+          <img src={logo}></img>
+        </Reveal>
       </div>
     </div>
   );

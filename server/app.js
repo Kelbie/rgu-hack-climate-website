@@ -36,6 +36,14 @@ var passport = require("passport");
 var util = require("util");
 var bunyan = require("bunyan");
 var config = require("./config");
+var path = require("path");
+const nodemailer = require("nodemailer");
+var bodyParser = require("body-parser");
+const { Client } = require("pg");
+const client = new Client({
+  database: "netzero"
+});
+client.connect();
 
 // set up database for express session
 var MongoStore = require("connect-mongo")(expressSession);
@@ -151,9 +159,23 @@ var app = express();
 
 app.set("views", __dirname + "/views");
 app.set("view engine", "ejs");
-app.use(express.logger());
 app.use(methodOverride());
 app.use(cookieParser());
+app.use(
+  bodyParser.urlencoded({
+    extended: true
+  })
+);
+
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "http://localhost:3000");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept, true"
+  );
+  res.header("Access-Control-Allow-Credentials", true);
+  next();
+});
 
 // set up session middleware
 if (config.useMongoDBSessionStore) {
@@ -179,12 +201,12 @@ if (config.useMongoDBSessionStore) {
 }
 
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
 // Initialize Passport!  Also use passport.session() middleware, to support
 // persistent login sessions (recommended).
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(app.router);
 app.use(express.static(__dirname + "/../../public"));
 
 //-----------------------------------------------------------------------------
@@ -205,13 +227,42 @@ function ensureAuthenticated(req, res, next) {
   res.redirect("/login");
 }
 
-app.get("/", function(req, res) {
-  res.render("index", { user: req.user });
+// app.get("/", function(req, res) {
+//   res.render("index", { user: req.user });
+// });
+
+app.get("/api/auth", function(req, res) {
+  res.json({ user: req.user });
+});
+
+app.get("/api/messages", async function(req, res) {
+  const contact_messages_response = await client.query(
+    `
+    SELECT * FROM contact_messages;
+  `,
+    []
+  );
+
+  res.json(contact_messages_response.rows);
 });
 
 // '/account' is only available to logged in user
 app.get("/account", ensureAuthenticated, function(req, res) {
   res.render("account", { user: req.user });
+});
+
+app.post("/api/contact", async function(req, res) {
+  console.log(req.body);
+  await client.query(
+    `
+    INSERT INTO contact_messages (
+      email, message, date
+    ) VALUES ($1, $2, $3)
+  `,
+    [req.body.email, req.body.message, new Date()]
+  );
+
+  res.json({});
 });
 
 app.get(
@@ -244,7 +295,7 @@ app.get(
   },
   function(req, res) {
     log.info("We received a return from AzureAD.");
-    res.redirect("/");
+    res.redirect("http://localhost:3000/");
   }
 );
 
@@ -262,7 +313,7 @@ app.post(
   },
   function(req, res) {
     log.info("We received a return from AzureAD.");
-    res.redirect("/");
+    res.redirect("http://localhost:3000/");
   }
 );
 
