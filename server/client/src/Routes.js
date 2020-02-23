@@ -7,6 +7,7 @@ import Blogs from "./Containers/Blogs/Blogs";
 import BlogHome from "./Containers/BlogPost/BlogPost";
 import Home from "./Containers/Home/Home";
 import Nav from "./Components/Nav/Nav";
+import Footer from "./Components/Footer/Footer";
 import Messages from "./Containers/Messages/Messages";
 import Thanks from "./Containers/Thanks/Thanks";
 import BlogPost from "./Containers/BlogPost/BlogPost";
@@ -28,6 +29,7 @@ const Routes = props => {
           <Route exact path="/messages" component={Messages} />
           <Route exact path="/thanks" component={Thanks} />
         </Switch>
+        <Footer></Footer>
       </Router>
     </div>
   );

@@ -77,16 +77,15 @@ function Home({ className, ...props }) {
           </Reveal>
         </div>
       </Section>
-      <Section className="max">
+      {/* <Section className="max">
         <div>
           <h1>Partners</h1>
           <Partners></Partners>
         </div>
-      </Section>
+      </Section> */}
       <Section className="max">
         <Contact></Contact>
       </Section>
-      <Footer></Footer>
     </div>
   );
 }
