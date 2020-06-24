@@ -9,7 +9,7 @@ import { docco } from "react-syntax-highlighter/dist/esm/styles/hljs";
 
 import "./BlogPost.css";
 import { config } from "../../config";
-import GithubReactionTextCard from "../../Components/GithubReactionTextCard/GithubReactionTextCard";
+// import GithubReactionTextCard from "../../Components/GithubReactionTextCard/GithubReactionTextCard";
 
 export default function BlogHome() {
   const [blog, setBlogs] = useState([]);
