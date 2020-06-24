@@ -6,7 +6,6 @@ import Markdown from "markdown-to-jsx";
 import readingTime from "reading-time";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import { docco } from "react-syntax-highlighter/dist/esm/styles/hljs";
-import { GithubCounter } from "react-reactions";
 
 import "./BlogPost.css";
 import { config } from "../../config";
@@ -15,7 +14,7 @@ import GithubReactionTextCard from "../../Components/GithubReactionTextCard/Gith
 export default function BlogHome() {
   const [blog, setBlogs] = useState([]);
   const [addReaction, setAddreaction] = useState(false);
-  const [reactionCounter, setReactionCounter] = useState([]);
+  // const [reactionCounter, setReactionCounter] = useState([]);
   const issueNumber = parseInt(window.location.href.split("/").pop());
 
   const getEmojiStringByName = useCallback(emojiName => {
@@ -65,7 +64,7 @@ export default function BlogHome() {
         reactions_array.push(obj);
       });
 
-      setReactionCounter(reactions_array);
+      // setReactionCounter(reactions_array);
     },
     [getEmojiStringByName]
   );
@@ -161,13 +160,13 @@ export default function BlogHome() {
     </SyntaxHighlighter>
   );
 
-  function githubCounterEmojiSelect(emoji) {
-    console.log(emoji);
-  }
+  // function githubCounterEmojiSelect(emoji) {
+  //   console.log(emoji);
+  // }
 
-  function githubCounterAddReaction() {
-    setAddreaction(!addReaction);
-  }
+  // function githubCounterAddReaction() {
+  //   setAddreaction(!addReaction);
+  // }
 
   return (
     <div>

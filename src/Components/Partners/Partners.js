@@ -7,7 +7,7 @@ import img2 from "./2.png";
 import img3 from "./3.png";
 
 function Partner(props) {
-  return <img {...props} />;
+  return <img {...props} alt="" />;
 }
 
 function Partners(props) {

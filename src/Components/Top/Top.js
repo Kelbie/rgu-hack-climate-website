@@ -12,7 +12,7 @@ function Top(props) {
           <span className="rgu">RGU</span>{" "}
           <span className="netzero">NETZERO</span>
         </h1>
-        <img src={logo}></img>
+        <img src={logo} alt=""></img>
       </div>
     </div>
   );

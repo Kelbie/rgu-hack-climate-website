@@ -1,5 +1,4 @@
 import React from "react";
-import ReactDOM from "react-dom";
 import ParticleField from "react-particles-webgl";
 import "./styles.css";
 import styled from "styled-components";
