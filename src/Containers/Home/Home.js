@@ -5,7 +5,7 @@ import styled from "styled-components";
 import Contact from "../../Components/Contact/Contact";
 import Top from "../../Components/Top/Top";
 import Partners from "../../Components/Partners/Partners";
-import Nav from "../../Components/Nav/Nav";
+// import Nav from "../../Components/Nav/Nav";
 import Cube from "../../Components/Cube/Cube";
 import Section from "../../Components/Section/Section";
 

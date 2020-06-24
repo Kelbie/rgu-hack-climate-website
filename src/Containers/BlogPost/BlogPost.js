@@ -13,7 +13,7 @@ import GithubReactionTextCard from "../../Components/GithubReactionTextCard/Gith
 
 export default function BlogHome() {
   const [blog, setBlogs] = useState([]);
-  const [addReaction, setAddreaction] = useState(false);
+  // const [addReaction, setAddreaction] = useState(false);
   // const [reactionCounter, setReactionCounter] = useState([]);
   const issueNumber = parseInt(window.location.href.split("/").pop());
 
@@ -206,12 +206,6 @@ export default function BlogHome() {
           >
             {blog.body}
           </Markdown>
-          {addReaction && (
-            <span className="reaction-github-emoji anim-scale-in">
-              {/* <GithubSelector onSelect={emoji => onEmojiSelect(emoji)} /> */}
-              <GithubReactionTextCard link={blog.url} />
-            </span>
-          )}
           {/* <GithubCounter counters={reactionCounter} onSelect={emoji => githubCounterEmojiSelect(emoji)} onAdd={() => githubCounterAddReaction()} /> */}
         </div>
       )}
